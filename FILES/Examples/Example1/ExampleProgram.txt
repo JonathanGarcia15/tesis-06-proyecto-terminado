@@ -1,0 +1,135 @@
+programa(){
+	var n<-2;
+	gira_derecha();
+	avanzar();
+	gira_izquierda();
+	avanzar(7);
+	gira_izquierda();
+	avanzar();
+	gira_izquierda();
+	para(var a<-0; a<5 ; a++){
+		PintarAleatorio();
+		toma_objeto();
+		gira_derecha(n);
+		avanzar(3);
+		soltar_objeto();
+		if(a<4){
+			gira_izquierda();
+			avanzar();
+			gira_izquierda();
+			avanzar(3);
+		}else{
+			gira_derecha();
+		}
+	}
+	stop_painting();
+	pintar_suelo();
+	avanzar(7);
+	gira_derecha();
+	avanzar(2);
+	n<-0;
+	stop_painting();
+	
+	hacer{
+		PintarAleatorio();
+		gira_derecha();
+		disable_kaboom();
+		toma_objeto();
+		gira_derecha(1);
+		if(n==0){
+			gira_derecha(1);
+			soltar_objeto();
+			delete_object();
+			gira_derecha(1);
+			avanzar(1);
+		}else{
+			soltar_objeto();
+			delete_object();
+			gira_derecha(2);
+			avanzar(1);
+		}		
+		n++;
+	}mientras(n<3);
+	
+	stop_painting();
+	gira_derecha();
+	var a<-5;
+	var e<-9;
+	n <-0;
+
+	repite_hasta(n<3){
+		PintarAleatorio();
+		disable_kaboom();
+		toma_objeto();
+		gira_izquierda();
+		avanzar(a);
+		gira_derecha();
+		avanzar(e);
+		gira_derecha();
+		soltar_objeto();
+		delete_object();
+		gira_derecha();
+		avanzar(e);
+		gira_izquierda();
+		a--;
+		avanzar(a);
+		gira_izquierda();
+		e<-e-1;
+		n++;
+	}
+	stop_painting();
+
+	n <-0;
+	repite_hasta(n<=1){
+		PintarAleatorio();
+		disable_kaboom();
+		toma_objeto();
+		gira_izquierda();
+		avanzar(a);
+		gira_derecha();
+		avanzar(e);
+		gira_derecha();
+		soltar_objeto();
+		gira_derecha();
+		avanzar(e);
+		gira_izquierda();
+		a--;
+		avanzar(a);
+		gira_izquierda();
+		e<-e-1;
+		n++;
+	}
+	stop_painting();
+	eliminar_objeto();
+	avanzar(a);
+	gira_derecha();
+	avanzar(8);
+	
+	si(in_front_me()==5){
+		avanzar();
+		print("He llegado a la meta! :D ");
+	}
+
+}
+
+PintarAleatorio(){
+	var numeroAleatorio <- random(1,6);
+	print_var(numeroAleatorio);
+	comparar(numeroAleatorio){
+		case 1: 
+			pintar_suelo(blue);
+			end;
+		case 2: 
+			pintar_suelo(green);
+			end;
+		case 3: 
+			pintar_suelo(yellow);
+			end;
+		case 4: 
+			pintar_suelo(red);
+			end;
+		default:
+			pintar_suelo();
+			end;			
+	}
+}

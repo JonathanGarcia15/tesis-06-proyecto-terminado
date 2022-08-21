@@ -1,0 +1,8 @@
+{
+	"IdiomaDelPrograma":"EN",
+	"IdiomaDelCompilador":"DEFAULT",
+	"MostrarOpcionGenerarCompiladores":true,
+	"TamanoTextoMapa":16,
+	"TiempoEspera":1000,
+	"TiempoInstruccion":1
+}

@@ -1,0 +1,5 @@
+{
+  "ErrorLexico":["Error en el análisis léxico. Símbolo no reconocido: \"","Error in lexical analysis. Unrecognized symbol: \""],
+  "Linea":["\" Línea: ","\" Line: "],
+  "Exito":["No se ha encontrado ningún problema de léxico. ","No lexical problems found. "]
+}

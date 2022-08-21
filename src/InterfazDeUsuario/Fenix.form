@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="InterfazDeUsuario.Fenix">
+  <grid id="27dc6" binding="jpnInterfazDeUsuario" layout-manager="FormLayout">
+    <rowspec value="center:d:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:218px:grow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="bottom:d:noGrow"/>
+    <colspec value="fill:300px:noGrow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:max(d;250px):grow"/>
+    <constraints>
+      <xy x="20" y="20" width="513" height="400"/>
+    </constraints>
+    <properties>
+      <font name="Consolas"/>
+      <minimumSize width="400" height="300"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="f544a" class="javax.swing.JLabel" binding="lblEditorCode">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms top="0" left="10" bottom="0" right="10"/>
+        </constraints>
+        <properties>
+          <text value="{EDITOR CODE:}"/>
+        </properties>
+      </component>
+      <component id="c279f" class="javax.swing.JLabel" binding="lblLog">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="10" fill="0" indent="0" use-parent-layout="false"/>
+          <forms top="0" left="10" bottom="0" right="10" defaultalign-vert="false"/>
+        </constraints>
+        <properties>
+          <text value="{LOG}"/>
+        </properties>
+      </component>
+      <component id="c07eb" class="javax.swing.JLabel" binding="lblResultados">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms top="10" left="10" bottom="10" right="10"/>
+        </constraints>
+        <properties>
+          <font name="Segoe UI Emoji" size="16"/>
+          <text value="{RESULTS}"/>
+        </properties>
+      </component>
+      <scrollpane id="eb610" binding="jscpCodigoFuente">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms top="10" left="10" bottom="10" right="10" defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="f036d" class="javax.swing.JTextArea" binding="txtCodigoFuente">
+            <constraints/>
+            <properties>
+              <font name="Consolas"/>
+              <tabSize value="2"/>
+              <text value="{ CODE AREA }"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <scrollpane id="ec837" binding="jscpResultados">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms top="10" left="10" bottom="10" right="10" defaultalign-horz="false" defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="7489d" class="javax.swing.JTextArea" binding="txtResultados">
+            <constraints/>
+            <properties>
+              <columns value="20"/>
+              <font name="Arial"/>
+              <rows value="5"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+    </children>
+  </grid>
+</form>

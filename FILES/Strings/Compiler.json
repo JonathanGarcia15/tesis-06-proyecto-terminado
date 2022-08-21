@@ -1,0 +1,7 @@
+{
+  "SinProbemas":["No hay problemas con el programa en el análisis sintáctico.","No problems with the program in parsing."],
+  "ErrorSintaxis":["Error de sintaxis en el programa. Línea: ","Syntax error in the program. Line: "],
+  "Columna":[" Columna: "," Column: "],
+  "AntesDe":[", Antes de: ",", Before: "],
+  "ErrorDesconocido":["Error de sintaxis desconocido, revise las variables que utilizó. ","Unknown syntax error, check the variables you used. "]
+}

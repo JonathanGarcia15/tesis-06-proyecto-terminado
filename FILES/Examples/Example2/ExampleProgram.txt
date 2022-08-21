@@ -1,0 +1,27 @@
+programa(){
+	while(in_front_me()!=5){
+		
+	}
+}
+
+
+PintarAleatorio(var idColor){
+	print_var(idColor);
+	comparar(idColor){
+		case 1: 
+			pintar_suelo(blue);
+			end;
+		case 2: 
+			pintar_suelo(green);
+			end;
+		case 3: 
+			pintar_suelo(yellow);
+			end;
+		case 4: 
+			pintar_suelo(red);
+			end;
+		default:
+			pintar_suelo();
+			end;			
+	}
+}

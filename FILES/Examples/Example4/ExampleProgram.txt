@@ -1,0 +1,22 @@
+programa(){
+	funcionSimple();
+	///funcionConParametros(7,1,8);
+	avanzar();
+	
+	if(id<45){}
+	
+}
+
+funcionSimple(){
+	avanzar();
+}
+
+funcionConParametros(var id, var other, var right){
+	funcionSimple();
+	turn_right(id);
+	avanzar();
+	gira_derecha(other);
+	avanzar();
+	turn_right(right);
+	avanzar();
+}

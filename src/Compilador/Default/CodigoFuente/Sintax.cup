@@ -1,0 +1,1472 @@
+package Compilador.Default.Compiler;
+
+import java_cup.runtime.Symbol;
+import java.util.Stack;
+import org.json.JSONObject;
+import java.util.ArrayList;
+
+parser code
+{:
+    private Symbol error;
+
+	private JSONObject resultadoJSON;
+
+	private Stack pilaDeInstrucciones = new Stack();
+	private Stack pilaDePilas = new Stack();
+
+	private ArrayList<JSONObject> instruccionesDelPrograma = new ArrayList<>();
+
+    public JSONObject getResultadoJSON() {
+        return resultadoJSON;
+    }
+
+    public Symbol getError(){
+        //Regresa el estado de error.
+        return this.error;
+	}
+
+    public void syntax_error(Symbol error){
+        //En caso de error recupera el símbolo exacto del error.
+        this.error = error;
+        resultadoJSON.put("status",false);
+        resultadoJSON.put("message","error");
+    }
+
+:};
+
+terminal PROGRAMA;
+terminal PARENTESISABRE;
+terminal PARENTESISCIERRA;
+terminal LLAVEABRE;
+terminal LLAVECIERRA;
+terminal VARIABLE;
+terminal PUNTOYCOMA;
+terminal IDENTIFICADOR;
+terminal SEPARADOR;
+terminal OPERADORASIGNACION;
+terminal NUMERO;
+terminal OPERADORARITMETICOSUMA;
+terminal OPERADORARITMETICORESTA;
+terminal OPERADORARITMETICO;
+terminal AVANZAR;
+terminal ESPERA;
+terminal IZQUIERDA;
+terminal DERECHA;
+terminal TOMAR;
+terminal SOLTAR;
+terminal ELIMINAR;
+terminal DESACTIVARKABOOM;
+terminal PINTAR;
+terminal COLORES;
+terminal DEJAPINTAR;
+terminal IMPRIMIRVARIABLE;
+terminal IMPRIMIRCADENA;
+terminal CADENA;
+terminal OBJETODELANTE;
+terminal KABOOMDEFRENTE;
+terminal QUETENGODELANTE;
+terminal MURODELANTE;
+terminal TERMINARBLOQUE;
+terminal SI;
+terminal BOOLEANO;
+terminal OPERADORDECOMPARACION;
+terminal OPERADORLOGICO;
+terminal SINOSI;
+terminal SINO;
+terminal COMPARAR;
+terminal CASO;
+terminal FIN;
+terminal DOSPUNTOS;
+terminal DEFAULT;
+terminal PARA;
+terminal HACER;
+terminal REPITEHASTA;
+terminal REPITE;
+terminal OPERADORNEGACION;
+terminal ERROR;
+terminal RANDOM;
+
+
+non terminal Inicio;
+non terminal BloqueDeInstrucciones;
+non terminal InstruccionDeclaracionDeVariables;
+non terminal DeclaracionDeVariables;
+non terminal MultiplesDeclaraciones;
+non terminal AsignacionDeValoresAlDeclararVariable;
+non terminal OperacionAritmetica;
+non terminal OperacionSinParentesis;
+non terminal ContinuacionOperacionSinParentesis;
+non terminal OperadoresAritmeticos;
+non terminal InstruccionModificacionDeValorDeVariables;
+non terminal InstruccionAvanzar;
+non terminal ParametrosDeEntradaDeUnaInstruccion;
+non terminal InstruccionEspera;
+non terminal InstruccionGirarALaIzquierda;
+non terminal InstruccionGirarALaDerecha;
+non terminal InstruccionTomarObjeto;
+non terminal InstruccionSoltarObjeto;
+non terminal InstruccionEliminarObjeto;
+non terminal InstruccionDesactivarKaboom;
+non terminal InstruccionPintarSuelo;
+non terminal PaletaDeColores;
+non terminal InstruccionDejarDePintarSuelo;
+non terminal InstruccionImprimirVariables;
+non terminal InstruccionImprimirCadenas;
+non terminal Cadenas;
+non terminal ContinuacionDeCadenas;
+non terminal InstruccionTerminarBloque;
+non terminal LlamadaAFuncion;
+non terminal Parametros;
+non terminal ParametrosContinuacion;
+non terminal EstrucutraDeControlIf;
+non terminal Condicion;
+non terminal CondicionDeComparacionSimple;
+non terminal CondicionDeComparacionSimpleContinuacion;
+non terminal CondicionDeComparacionConParentesis;
+non terminal CondicionLogica;
+non terminal EstrucutraDeControlIfElse;
+non terminal EstrucutraDeControlElse;
+non terminal EstrucutraDeControlCase;
+non terminal Casos;
+non terminal CasoDefault;
+non terminal EstrucutraDeControlFor;
+non terminal DeclaracionesParaFor;
+non terminal DeclaracionesParaForContinuacion;
+non terminal InstruccionesParaFor;
+non terminal InstruccionesParaForContinuacion;
+non terminal EstrucutraDeControlDoWhile;
+non terminal EstrucutraDeControlWhile;
+non terminal Funciones;
+non terminal ParametrosDeEntrada;
+non terminal MasParametrosDeEntrada;
+non terminal OperadorNegacion;
+non terminal OperacionConParentesis;
+non terminal continuaOperacion;
+non terminal NumeroAleatorio;
+non terminal CondicionParaCasos;
+non terminal OperadorDeComparacionOpcional;
+non terminal FinalOpcional;
+non terminal inrementosYDecrementos;
+
+
+start with Inicio;
+
+Inicio::=
+	{:
+	/* Inicializa el objeto resultadoJSON que es el resultado completo del análisis */
+	 resultadoJSON = new JSONObject();
+	 :} PROGRAMA PARENTESISABRE PARENTESISCIERRA LLAVEABRE
+	 BloqueDeInstrucciones {:
+	    /* Vacía las instrucciones de BloqueDeInstrucciones */
+	    resultadoJSON.put("main",instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	 :} LLAVECIERRA
+	 Funciones {:
+        /* Finaliza resultadoJSON */
+
+         resultadoJSON.put("status",true);
+         resultadoJSON.put("message","success");
+
+         /* Vacía las instrucciones de Funciones */
+         resultadoJSON.put("functions",instruccionesDelPrograma);
+         :}
+;
+
+BloqueDeInstrucciones::=
+	InstruccionDeclaracionDeVariables BloqueDeInstrucciones
+	| InstruccionModificacionDeValorDeVariables BloqueDeInstrucciones
+	| InstruccionAvanzar BloqueDeInstrucciones
+	| InstruccionEspera BloqueDeInstrucciones
+	| InstruccionGirarALaIzquierda BloqueDeInstrucciones
+	| InstruccionGirarALaDerecha BloqueDeInstrucciones
+	| InstruccionTomarObjeto BloqueDeInstrucciones
+	| InstruccionSoltarObjeto BloqueDeInstrucciones
+	| InstruccionEliminarObjeto BloqueDeInstrucciones
+	| InstruccionDesactivarKaboom BloqueDeInstrucciones
+	| InstruccionPintarSuelo BloqueDeInstrucciones
+	| InstruccionDejarDePintarSuelo BloqueDeInstrucciones
+	| InstruccionImprimirVariables BloqueDeInstrucciones
+	| InstruccionImprimirCadenas BloqueDeInstrucciones
+	| InstruccionTerminarBloque BloqueDeInstrucciones
+	| EstrucutraDeControlIf BloqueDeInstrucciones
+	| EstrucutraDeControlCase BloqueDeInstrucciones
+	| EstrucutraDeControlFor BloqueDeInstrucciones
+	| EstrucutraDeControlDoWhile BloqueDeInstrucciones
+	| EstrucutraDeControlWhile BloqueDeInstrucciones
+	| LlamadaAFuncion BloqueDeInstrucciones
+	| inrementosYDecrementos BloqueDeInstrucciones
+	| /* Epsilon: Sin Bloque de Instrucciones */
+;
+
+InstruccionDeclaracionDeVariables::=
+	VARIABLE DeclaracionDeVariables PUNTOYCOMA
+;
+
+DeclaracionDeVariables::=
+	IDENTIFICADOR:identificador {:
+        instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("identifier",identificador)
+                .put("type",0)
+                .put("value",-1)
+                .put("valueFrom","")
+                .put("operation",new JSONObject())
+                .put("random",new JSONObject())
+                .put("instruction","DECLARAVARIABLE")
+        );
+	:}
+	| IDENTIFICADOR:identificador AsignacionDeValoresAlDeclararVariable:objetoJSON {:
+	    JSONObject JSONTemporal = (JSONObject) objetoJSON;
+	    instruccionesDelPrograma.add(
+                    new JSONObject()
+                        .put("identifier",identificador)
+                        .put("type",JSONTemporal.get("type"))
+                        .put("value",JSONTemporal.get("value"))
+                        .put("valueFrom",JSONTemporal.get("valueFrom"))
+                        .put("operation",JSONTemporal.get("operation"))
+                        .put("random",JSONTemporal.get("random"))
+                        .put("instruction","DECLARAVARIABLE")
+                );
+	:}
+	| IDENTIFICADOR:identificador {:
+            instruccionesDelPrograma.add(
+                new JSONObject()
+                    .put("identifier",identificador)
+                    .put("type",0)
+                    .put("value",-1)
+                    .put("valueFrom","")
+                    .put("operation",new JSONObject())
+                    .put("random",new JSONObject())
+                    .put("instruction","DECLARAVARIABLE")
+            );
+        :}MultiplesDeclaraciones
+;
+
+MultiplesDeclaraciones::=
+	SEPARADOR IDENTIFICADOR:identificador {:
+             instruccionesDelPrograma.add(
+                 new JSONObject()
+                     .put("identifier",identificador)
+                     .put("type",0)
+                     .put("value",-1)
+                     .put("valueFrom","")
+                     .put("operation",new JSONObject())
+                     .put("random",new JSONObject())
+                     .put("instruction","DECLARAVARIABLE")
+             );
+        :} MultiplesDeclaraciones
+	| SEPARADOR IDENTIFICADOR:identificador AsignacionDeValoresAlDeclararVariable:objetoJSON  {:
+        JSONObject JSONTemporal = (JSONObject) objetoJSON;
+        instruccionesDelPrograma.add(
+                     new JSONObject()
+                         .put("identifier",identificador)
+                         .put("type",JSONTemporal.get("type"))
+                         .put("value",JSONTemporal.get("value"))
+                         .put("valueFrom",JSONTemporal.get("valueFrom"))
+                         .put("operation",JSONTemporal.get("operation"))
+                         .put("random",JSONTemporal.get("random"))
+                         .put("instruction","DECLARAVARIABLE")
+                 );
+    :}MultiplesDeclaraciones
+	| SEPARADOR IDENTIFICADOR:identificador AsignacionDeValoresAlDeclararVariable:objetoJSON  {:
+        JSONObject JSONTemporal = (JSONObject) objetoJSON;
+        instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("identifier",identificador)
+                 .put("type",JSONTemporal.get("type"))
+                 .put("value",JSONTemporal.get("value"))
+                 .put("valueFrom",JSONTemporal.get("valueFrom"))
+                 .put("operation",JSONTemporal.get("operation"))
+                 .put("random",JSONTemporal.get("random"))
+                 .put("instruction","DECLARAVARIABLE")
+        );
+    :}
+	| SEPARADOR IDENTIFICADOR:identificador {:
+             instruccionesDelPrograma.add(
+                 new JSONObject()
+                     .put("identifier",identificador)
+                     .put("type",0)
+                     .put("value",-1)
+                     .put("valueFrom","")
+                     .put("operation",new JSONObject())
+                     .put("random",new JSONObject())
+                     .put("instruction","DECLARAVARIABLE")
+             );
+        :}
+;
+
+AsignacionDeValoresAlDeclararVariable::=
+	OPERADORASIGNACION NUMERO:numero {:
+	    RESULT = new JSONObject()
+            .put("type",1)
+            .put("value",Integer.valueOf((String) numero))
+            .put("valueFrom","")
+            .put("operation",new JSONObject())
+            .put("random",new JSONObject())
+        ;
+	:}
+	| OPERADORASIGNACION IDENTIFICADOR:identificador {:
+        RESULT = new JSONObject()
+              .put("type",4)
+              .put("value",-1)
+              .put("valueFrom",identificador)
+              .put("operation",new JSONObject())
+              .put("random",new JSONObject())
+          ;
+    :}
+	| OPERADORASIGNACION NumeroAleatorio:objetoJSON {:
+	     //JSONObject JSONTemporal = (JSONObject) objetoJSON;
+         RESULT = new JSONObject()
+               .put("type",2)
+               .put("value",-1)
+               .put("valueFrom","")
+               .put("operation",new JSONObject())
+               .put("random",(JSONObject) objetoJSON)
+           ;
+     :}
+	| OPERADORASIGNACION OperacionAritmetica:objetoJSON {:
+        //JSONObject JSONTemporal = (JSONObject) objetoJSON;
+        RESULT = new JSONObject()
+            .put("type",3)
+            .put("value",-1)
+            .put("valueFrom","")
+            .put("operation",(JSONObject) objetoJSON)
+            .put("random",new JSONObject())
+        ;
+    :}
+    | OPERADORASIGNACION QUETENGODELANTE PARENTESISABRE PARENTESISCIERRA {:
+        RESULT = new JSONObject()
+              .put("type",5)
+              .put("value",-1)
+              .put("valueFrom","")
+              .put("operation",new JSONObject())
+              .put("random",new JSONObject())
+          ;
+    :}
+;
+
+OperacionAritmetica::=
+	OperacionSinParentesis:objetoJSON {: RESULT = objetoJSON; :}
+	| OperacionConParentesis:objetoJSON {: RESULT = objetoJSON; :}
+;
+
+OperacionConParentesis::=
+    PARENTESISABRE OperacionAritmetica:operacion PARENTESISCIERRA continuaOperacion:objetoJSON {:
+        RESULT = new JSONObject()
+            .put("isBracket",true)
+            .put("type",0)
+            .put("value",-1)
+            .put("valueFrom","")
+            .put("random",(JSONObject) objetoJSON)
+            .put("operation",(JSONObject) operacion)
+            .put("operator","")
+        ;
+    :}
+;
+
+continuaOperacion::=
+    ContinuacionOperacionSinParentesis:objetoJSON {: RESULT = objetoJSON; :}
+    | /* No continua nada después de un paréntesis que cierra */ {: RESULT = new JSONObject(); :}
+;
+
+OperacionSinParentesis::=
+	IDENTIFICADOR:identificador ContinuacionOperacionSinParentesis:objetoJSON {:
+         RESULT = new JSONObject()
+             .put("isBracket",false)
+             .put("type",2)
+             .put("value",-1)
+             .put("valueFrom",identificador)
+             .put("random",new JSONObject())
+             .put("operation",(JSONObject) objetoJSON)
+             .put("operator","")
+         ;
+     :}
+	| NUMERO:numero ContinuacionOperacionSinParentesis:objetoJSON {:
+        RESULT = new JSONObject()
+            .put("isBracket",false)
+            .put("type",1)
+            .put("value",Integer.valueOf((String) numero))
+            .put("valueFrom","")
+            .put("random",new JSONObject())
+            .put("operation",(JSONObject) objetoJSON)
+            .put("operator","")
+        ;
+    :}
+	| NumeroAleatorio:random ContinuacionOperacionSinParentesis:objetoJSON {:
+        RESULT = new JSONObject()
+            .put("isBracket",false)
+            .put("type",3)
+            .put("value",-1)
+            .put("valueFrom","")
+            .put("random",(JSONObject) random)
+            .put("operation",(JSONObject) objetoJSON)
+            .put("operator","")
+        ;
+    :}
+;
+
+ContinuacionOperacionSinParentesis::=
+	OperadoresAritmeticos:operator IDENTIFICADOR:identificador ContinuacionOperacionSinParentesis:objetoJSON {:
+        RESULT = new JSONObject()
+            .put("isBracket",false)
+            .put("type",2)
+            .put("value",-1)
+            .put("valueFrom",identificador)
+            .put("random",new JSONObject())
+            .put("operation",(JSONObject) objetoJSON)
+            .put("operator",operator)
+        ;
+    :}
+	| OperadoresAritmeticos:operator NUMERO:numero ContinuacionOperacionSinParentesis:objetoJSON {:
+        RESULT = new JSONObject()
+            .put("isBracket",false)
+            .put("type",1)
+            .put("value",Integer.valueOf((String) numero))
+            .put("valueFrom","")
+            .put("random",new JSONObject())
+            .put("operation",(JSONObject) objetoJSON)
+            .put("operator",operator)
+        ;
+    :}
+	| OperadoresAritmeticos:operator NumeroAleatorio:aleatorio ContinuacionOperacionSinParentesis:objetoJSON {:
+        RESULT = new JSONObject()
+            .put("isBracket",false)
+            .put("type",3)
+            .put("value",-1)
+            .put("valueFrom","")
+            .put("random",(JSONObject) aleatorio)
+            .put("operation",(JSONObject) objetoJSON)
+            .put("operator",operator)
+        ;
+    :}
+	| OperadoresAritmeticos:operator OperacionConParentesis:objetoJSON  {:
+         RESULT = new JSONObject()
+             .put("isBracket",true)
+             .put("type",0)
+             .put("value",-1)
+             .put("valueFrom","")
+             .put("random",new JSONObject())
+             .put("operation",(JSONObject) objetoJSON)
+             .put("operator",operator)
+         ;
+     :}
+	| OperadoresAritmeticos:operator IDENTIFICADOR:identificador {:
+        RESULT = new JSONObject()
+            .put("isBracket",false)
+            .put("type",2)
+            .put("value",-1)
+            .put("valueFrom",identificador)
+            .put("random",new JSONObject())
+            .put("operation",new JSONObject())
+            .put("operator",operator)
+        ;
+    :}
+	| OperadoresAritmeticos:operator NUMERO:numero {:
+        RESULT = new JSONObject()
+            .put("isBracket",false)
+            .put("type",1)
+            .put("value",Integer.valueOf((String) numero))
+            .put("valueFrom","")
+            .put("random",new JSONObject())
+            .put("operation",new JSONObject())
+            .put("operator",operator)
+        ;
+    :}
+	| OperadoresAritmeticos:operator NumeroAleatorio:objetoJSON {:
+         RESULT = new JSONObject()
+             .put("isBracket",false)
+             .put("type",3)
+             .put("value",-1)
+             .put("valueFrom","")
+             .put("random",(JSONObject) objetoJSON)
+             .put("operation",new JSONObject())
+             .put("operator",operator)
+         ;
+     :}
+;
+
+OperadoresAritmeticos::=
+	OPERADORARITMETICO:operador {: RESULT= operador; :}
+	| OPERADORARITMETICOSUMA:operador {: RESULT= operador; :}
+	| OPERADORARITMETICORESTA:operador {: RESULT= operador; :}
+;
+
+InstruccionModificacionDeValorDeVariables::=
+	IDENTIFICADOR:identificador AsignacionDeValoresAlDeclararVariable:objetoJSON PUNTOYCOMA {:
+	    instruccionesDelPrograma.add(
+	        new JSONObject()
+                .put("identifier",identificador)
+                .put("valueFrom",(JSONObject) objetoJSON)
+                .put("instruction","MODIFICAVARIABLE")
+	    );
+	:}
+;
+
+InstruccionAvanzar::=
+	AVANZAR PARENTESISABRE ParametrosDeEntradaDeUnaInstruccion:parameter PARENTESISCIERRA PUNTOYCOMA {:
+	    instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("parameter",(JSONObject) parameter)
+                .put("instruction","AVANZAR")
+        );
+	:}
+;
+
+NumeroAleatorio::=
+    RANDOM PARENTESISABRE NUMERO:numero1 SEPARADOR NUMERO:numero2 PARENTESISCIERRA {:
+        RESULT = new JSONObject()
+            .put("from",Integer.valueOf((String) numero1))
+            .put("to",Integer.valueOf((String) numero2))
+            .put("between",true)
+            .put("instruction","RANDOM")
+        ;
+    :}
+    | RANDOM PARENTESISABRE PARENTESISCIERRA {:
+        RESULT = new JSONObject()
+            .put("from",-1)
+            .put("to",-1)
+            .put("between",false)
+            .put("instruction","RANDOM")
+        ;
+    :}
+;
+
+ParametrosDeEntradaDeUnaInstruccion::=
+	IDENTIFICADOR:identificador {:
+	    RESULT = new JSONObject()
+            .put("identifier",identificador)
+            .put("type",1)
+            .put("value",-1)
+            .put("valueFrom",new JSONObject())
+        ;
+	:}
+	| NUMERO:numero {:
+	    RESULT = new JSONObject()
+            .put("identifier","")
+            .put("type",2)
+            .put("value",Integer.valueOf((String) numero))
+            .put("valueFrom",new JSONObject())
+        ;
+	:}
+	| NumeroAleatorio:objetoJSON {:
+        RESULT = new JSONObject()
+            .put("identifier","")
+            .put("type",3)
+            .put("value",-1)
+            .put("valueFrom",(JSONObject) objetoJSON)
+        ;
+	:}
+	| OperacionAritmetica:objetoJSON {:
+        RESULT = new JSONObject()
+            .put("identifier","")
+            .put("type",4)
+            .put("value",-1)
+            .put("valueFrom",(JSONObject) objetoJSON)
+        ;
+    :}
+	| /* Los parámetros de entrada pueden ir vacíos */ {:
+        RESULT = new JSONObject()
+            .put("identifier","")
+            .put("type",0)
+            .put("value",-1)
+            .put("valueFrom",new JSONObject())
+        ;
+    :}
+;
+
+InstruccionEspera::=
+	ESPERA PARENTESISABRE ParametrosDeEntradaDeUnaInstruccion:parameter PARENTESISCIERRA PUNTOYCOMA {:
+	    instruccionesDelPrograma.add(
+	        new JSONObject()
+                .put("parameter",(JSONObject) parameter)
+                .put("instruction","ESPERA")
+        );
+	:}
+;
+
+InstruccionGirarALaIzquierda::=
+	IZQUIERDA PARENTESISABRE ParametrosDeEntradaDeUnaInstruccion:parameter PARENTESISCIERRA PUNTOYCOMA {:
+	    instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("parameter",(JSONObject) parameter)
+                .put("instruction","IZQUIERDA")
+        );
+	:}
+;
+
+InstruccionGirarALaDerecha::=
+	DERECHA PARENTESISABRE ParametrosDeEntradaDeUnaInstruccion:parameter PARENTESISCIERRA PUNTOYCOMA {:
+	    instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("parameter",(JSONObject) parameter)
+                .put("instruction","DERECHA")
+        );
+	:}
+;
+
+InstruccionTomarObjeto::=
+	TOMAR PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA {:
+        instruccionesDelPrograma.add(
+                new JSONObject()
+                    .put("instruction","TOMAR")
+            );
+	:}
+;
+
+InstruccionSoltarObjeto::=
+	SOLTAR PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA {:
+         instruccionesDelPrograma.add(
+                 new JSONObject()
+                     .put("instruction","SOLTAR")
+             );
+    :}
+;
+
+InstruccionEliminarObjeto::=
+	ELIMINAR PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA {:
+           instruccionesDelPrograma.add(
+                   new JSONObject()
+                       .put("instruction","ELIMINAR")
+               );
+    :}
+;
+
+InstruccionDesactivarKaboom::=
+	DESACTIVARKABOOM PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA {:
+          instruccionesDelPrograma.add(
+                  new JSONObject()
+                      .put("instruction","DESACTIVARKABOOM")
+              );
+    :}
+;
+
+InstruccionPintarSuelo::=
+	PINTAR PARENTESISABRE PaletaDeColores:color PARENTESISCIERRA PUNTOYCOMA {:
+	    instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("instruction","PINTAR")
+                .put("color",color)
+            );
+	:}
+;
+
+PaletaDeColores::=
+	COLORES:color {: RESULT = color; :}
+	| /* Color predeterminado - No hay entrada de algún color. */ {: RESULT = "DEFAULT"; :}
+;
+
+InstruccionDejarDePintarSuelo::=
+	DEJAPINTAR PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA {:
+         instruccionesDelPrograma.add(
+             new JSONObject()
+                 .put("instruction","DEJAPINTAR")
+         );
+    :}
+;
+
+InstruccionImprimirVariables::=
+	IMPRIMIRVARIABLE PARENTESISABRE IDENTIFICADOR:identifier  PARENTESISCIERRA PUNTOYCOMA {:
+          instruccionesDelPrograma.add(
+              new JSONObject()
+                  .put("instruction","IMPRIMIRVARIABLE")
+                  .put("identifier",identifier)
+          );
+     :}
+;
+
+InstruccionImprimirCadenas::=
+	IMPRIMIRCADENA PARENTESISABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+        pilaDeInstrucciones = new Stack();
+	:} Cadenas PARENTESISCIERRA PUNTOYCOMA {:
+        //pilaDeInstrucciones = acomodarPila(pilaDeInstrucciones);
+        ArrayList<JSONObject> listaTemporal = new ArrayList<>();
+        Stack pilaTemporal = new Stack();
+        while(!pilaDeInstrucciones.empty()){
+            pilaTemporal.add((JSONObject) pilaDeInstrucciones.pop());
+        }
+        while(!pilaTemporal.empty()){
+            listaTemporal.add((JSONObject) pilaTemporal.pop());
+        }
+        pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+
+        instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("instruction","IMPRIMIRCADENA")
+                .put("parameter",listaTemporal)
+        );
+	:}
+;
+
+Cadenas::=
+	IDENTIFICADOR:identificador {:
+	    pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 0)
+                .put("string", "")
+                .put("valueFrom", identificador)
+        );
+	:}ContinuacionDeCadenas
+	| CADENA:cadena {:
+	    pilaDeInstrucciones.add(
+	        new JSONObject()
+	            .put("type", 1)
+	            .put("string", (String) cadena)
+	            .put("valueFrom", "")
+        );
+	:} ContinuacionDeCadenas
+;
+
+ContinuacionDeCadenas::=
+	OPERADORARITMETICOSUMA IDENTIFICADOR:identificador {:
+        pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 0)
+                .put("string", "")
+                .put("valueFrom", identificador)
+        );
+	:} ContinuacionDeCadenas
+	| OPERADORARITMETICOSUMA CADENA:cadena {:
+        pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 1)
+                .put("string", (String) cadena)
+                .put("valueFrom", "")
+        );
+    :} ContinuacionDeCadenas
+	| /* Ningúna cadena más */
+;
+
+InstruccionTerminarBloque::=
+	TERMINARBLOQUE PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA {:
+         instruccionesDelPrograma.add(
+             new JSONObject()
+                 .put("instruction","TERMINARBLOQUE")
+         );
+     :}
+;
+
+LlamadaAFuncion::=
+	IDENTIFICADOR:nombreFuncion PARENTESISABRE {:
+        pilaDePilas.add(pilaDeInstrucciones);
+        pilaDeInstrucciones = new Stack();
+	:} Parametros PARENTESISCIERRA PUNTOYCOMA {:
+        //pilaDeInstrucciones = acomodarPila(pilaDeInstrucciones);
+        ArrayList<JSONObject> listaTemporal = new ArrayList<>();
+        Stack pilaTemporal = new Stack();
+        while(!pilaDeInstrucciones.empty()){
+            pilaTemporal.add((JSONObject) pilaDeInstrucciones.pop());
+        }
+        while(!pilaTemporal.empty()){
+            listaTemporal.add((JSONObject) pilaTemporal.pop());
+        }
+        pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+
+        instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("instruction","LLAMADAAFUNCION")
+                .put("parameter",listaTemporal)
+                .put("name",nombreFuncion)
+        );
+	:}
+;
+
+Parametros::=
+	NUMERO:numero {:
+	    pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 1)
+                .put("value",Integer.valueOf((String) numero))
+                .put("identifier", "")
+                .put("valueFrom", new JSONObject())
+        );
+	:} ParametrosContinuacion
+	| IDENTIFICADOR:identificador {:
+	    pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 2)
+                .put("value",-1)
+                .put("identifier", identificador)
+                .put("valueFrom", new JSONObject())
+        );
+	:} ParametrosContinuacion
+	| NumeroAleatorio:objetoJSON {:
+	    pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 3)
+                .put("value",-1)
+                .put("identifier", "")
+                .put("valueFrom", (JSONObject) objetoJSON)
+        );
+	:} ParametrosContinuacion
+	| OperacionAritmetica:objetoJSON {:
+        pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 4)
+                .put("value",-1)
+                .put("identifier", "")
+                .put("valueFrom", (JSONObject) objetoJSON)
+        );
+	:} ParametrosContinuacion
+	| /* Puede no llevar identificadores */
+;
+
+ParametrosContinuacion::=
+	SEPARADOR NUMERO:numero {:
+	    pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 1)
+                .put("value",Integer.valueOf((String) numero))
+                .put("identifier", "")
+                .put("valueFrom", new JSONObject())
+        );
+	:} ParametrosContinuacion
+	| SEPARADOR IDENTIFICADOR:identificador {:
+	    pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 2)
+                .put("value",-1)
+                .put("identifier", identificador)
+                .put("valueFrom", new JSONObject())
+        );
+	:} ParametrosContinuacion
+	| SEPARADOR NumeroAleatorio:objetoJSON {:
+	    pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 3)
+                .put("value",-1)
+                .put("identifier", "")
+                .put("valueFrom", (JSONObject) objetoJSON)
+        );
+	:} ParametrosContinuacion
+	| SEPARADOR OperacionAritmetica:objetoJSON {:
+	    pilaDeInstrucciones.add(
+            new JSONObject()
+                .put("type", 4)
+                .put("value",-1)
+                .put("identifier", "")
+                .put("valueFrom", (JSONObject) objetoJSON)
+        );
+	:} ParametrosContinuacion
+    | /* No envía más parámetros */
+;
+
+EstrucutraDeControlIf::=
+	SI PARENTESISABRE Condicion:condicion PARENTESISCIERRA LLAVEABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	:} BloqueDeInstrucciones LLAVECIERRA EstrucutraDeControlIfElse:continuacion {:
+	    JSONObject temporal = new JSONObject();
+	    temporal
+	        .put("condition",(JSONObject) condicion)
+	        .put("subprogram",instruccionesDelPrograma)
+	        .put("instruction","SI")
+	        .put("continue",(ArrayList<JSONObject>) continuacion)
+	    ;
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+	    instruccionesDelPrograma.add(temporal);
+	:}
+;
+
+Condicion::=
+	CondicionDeComparacionSimple:condicion {: RESULT = condicion; :}
+	| CondicionLogica:condicion {: RESULT = condicion; :}
+	| CondicionDeComparacionConParentesis:condicion {: RESULT = condicion; :}
+;
+
+CondicionDeComparacionSimple::=
+	IDENTIFICADOR:identificador CondicionDeComparacionSimpleContinuacion:comparar {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier",identificador)
+	            .put("type",1)
+	            .put("value",-1)
+	            .put("compareWith",(JSONObject) comparar)
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	:}
+	| NUMERO:numero CondicionDeComparacionSimpleContinuacion:comparar {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",2)
+	            .put("value", Integer.valueOf((String) numero))
+	            .put("compareWith",(JSONObject) comparar)
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	:}
+	| NumeroAleatorio:aleatorio CondicionDeComparacionSimpleContinuacion:comparar {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",3)
+	            .put("value",-1)
+	            .put("compareWith",(JSONObject) comparar)
+	            .put("valueFrom",(JSONObject) aleatorio)
+	            .put("isBracket",false)
+	    ;
+	:}
+	| QUETENGODELANTE PARENTESISABRE PARENTESISCIERRA CondicionDeComparacionSimpleContinuacion:comparar {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",9)
+	            .put("value",-1)
+	            .put("compareWith",(JSONObject) comparar)
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	 :}
+
+	| KABOOMDEFRENTE PARENTESISABRE PARENTESISCIERRA {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",8)
+	            .put("value",-1)
+	            .put("compareWith",new JSONObject())
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	:}
+
+	| MURODELANTE PARENTESISABRE PARENTESISCIERRA {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",6)
+	            .put("value",-1)
+	            .put("compareWith",new JSONObject())
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	:}
+
+	| OBJETODELANTE PARENTESISABRE PARENTESISCIERRA {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",7)
+	            .put("value",-1)
+	            .put("compareWith",new JSONObject())
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	:}
+
+	| BOOLEANO:booleano {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",0)
+	            .put("value",booleano)
+	            .put("compareWith",new JSONObject())
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	:}
+;
+
+CondicionDeComparacionSimpleContinuacion::=
+	OPERADORDECOMPARACION:operador IDENTIFICADOR:identificador {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier",identificador)
+	            .put("type",1)
+	            .put("value",-1)
+	            .put("compareWith",new JSONObject())
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	:}
+	| OPERADORDECOMPARACION:operador NUMERO:numero {:
+	        RESULT =
+                new JSONObject()
+                    .put("identifier","")
+                    .put("type",2)
+                    .put("value",Integer.valueOf((String) numero))
+                    .put("operator",(String) operador)
+                    .put("valueFrom",new JSONObject())
+                    .put("isBracket",false)
+            ;
+	:}
+	| OPERADORDECOMPARACION:operador QUETENGODELANTE PARENTESISABRE PARENTESISCIERRA {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",9)
+	            .put("value",-1)
+	            .put("operator",(String) operador)
+	            .put("valueFrom",new JSONObject())
+	            .put("isBracket",false)
+	    ;
+	:}
+	| OPERADORDECOMPARACION:operador NumeroAleatorio:aleatorio  {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",3)
+	            .put("value",-1)
+	            .put("operator",(String) operador)
+	            .put("valueFrom",(JSONObject) aleatorio)
+	            .put("isBracket",false)
+	    ;
+	:}
+;
+
+CondicionDeComparacionConParentesis::=
+	OperadorNegacion:negacion PARENTESISABRE CondicionDeComparacionSimple:comparacion PARENTESISCIERRA {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier","")
+	            .put("type",4)
+	            .put("value",(Boolean) negacion)
+	            .put("compareWith",new JSONObject())
+	            .put("valueFrom",(JSONObject) comparacion)
+	            .put("isBracket",true)
+	    ;
+	:}
+;
+
+CondicionLogica::=
+	CondicionDeComparacionConParentesis:izquierda OPERADORLOGICO:operador CondicionDeComparacionConParentesis:derecha {:
+	    RESULT =
+	        new JSONObject()
+	            .put("identifier",(String) operador)
+	            .put("type",5)
+	            .put("value",-1)
+	            .put("compareWith",(JSONObject) derecha)
+	            .put("valueFrom",(JSONObject) izquierda)
+	            .put("isBracket",false)
+	    ;
+	:}
+;
+
+EstrucutraDeControlIfElse::=
+	SINOSI PARENTESISABRE Condicion:condicion PARENTESISCIERRA LLAVEABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	:} BloqueDeInstrucciones LLAVECIERRA EstrucutraDeControlIfElse:anteriores {:
+	    JSONObject temporal = new JSONObject();
+	    temporal
+	        .put("condition",(JSONObject) condicion)
+            .put("subprogram",instruccionesDelPrograma)
+            .put("instruction","SINOSI")
+            //.put("continue",(ArrayList<JSONObject>) anteriores)
+	    ;
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+	    //instruccionesDelPrograma.add(temporal);
+	    ArrayList<JSONObject> lista = (ArrayList<JSONObject>) anteriores;
+	    lista.add(temporal);
+	    RESULT = lista;
+	:}
+	| EstrucutraDeControlElse:elsefinal {: RESULT = (ArrayList<JSONObject>) elsefinal; :}
+;
+
+EstrucutraDeControlElse::=
+	SINO LLAVEABRE {:
+
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+
+	:} BloqueDeInstrucciones LLAVECIERRA {:
+	    JSONObject temporal = new JSONObject();
+	    temporal
+	        .put("subprogram",instruccionesDelPrograma)
+	        .put("instruction","SINO")
+	    ;
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+	    //instruccionesDelPrograma.add(temporal);
+	    ArrayList<JSONObject> lista = new ArrayList<>();
+	    lista.add(temporal);
+	    RESULT = lista;
+	:}
+	| /* NO lleva nada*/ {:
+        ArrayList<JSONObject> listaVacia = new ArrayList<>();
+        RESULT = listaVacia;
+	:}
+;
+
+EstrucutraDeControlCase::=
+	COMPARAR PARENTESISABRE IDENTIFICADOR:identificador PARENTESISCIERRA LLAVEABRE Casos:casesJSON CasoDefault:defaultJSON LLAVECIERRA {:
+	    instruccionesDelPrograma.add(
+	        new JSONObject()
+	            .put("instruction","COMPARAR")
+	            .put("identifier",identificador)
+	            //.put("cases",new JSONObject())
+	            //.put("default",new JSONObject())
+	            .put("cases",(JSONObject) casesJSON)
+	            .put("default",(JSONObject) defaultJSON)
+	            .put("type",1)
+	    );
+	:}
+	| COMPARAR PARENTESISABRE QUETENGODELANTE PARENTESISABRE PARENTESISCIERRA PARENTESISCIERRA LLAVEABRE Casos:casesJSON CasoDefault:defaultJSON LLAVECIERRA {:
+      	    instruccionesDelPrograma.add(
+      	        new JSONObject()
+      	            .put("instruction","COMPARAR")
+      	            .put("identifier","")
+      	            //.put("cases",new JSONObject())
+      	            //.put("default",new JSONObject())
+      	            .put("cases",(JSONObject) casesJSON)
+      	            .put("default",(JSONObject) defaultJSON)
+      	            .put("type",2)
+      	    );
+      	:}
+;
+
+Casos::=
+	CASO CondicionParaCasos:condicion DOSPUNTOS {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	:} BloqueDeInstrucciones FinalOpcional:finalOpcional Casos:casosAnteriores {:
+        JSONObject temporal = new JSONObject();
+        temporal
+            .put("condition", (JSONObject) condicion)
+            .put("instruction","CASO")
+            .put("subprogram",instruccionesDelPrograma)
+            .put("end",finalOpcional)
+            .put("continue", casosAnteriores)
+        ;
+        instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+        pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+        //instruccionesDelPrograma.add(temporal);
+        //ArrayList<JSONObject> lista = (ArrayList<JSONObject>) anteriores;
+        //lista.add(temporal);
+        RESULT = temporal;
+	:}
+	| /* Sin más casos */ {: RESULT = new JSONObject(); :}
+;
+
+CondicionParaCasos::=
+    OperadorDeComparacionOpcional:operador NUMERO:numero {:
+        RESULT =
+            new JSONObject()
+                .put("operator", (String) operador)
+                .put("valueFrom", new JSONObject())
+                .put("type",0)
+                .put("value",Integer.valueOf((String) numero))
+        ;
+    :}
+    | OperadorDeComparacionOpcional:operador NumeroAleatorio:objetoJSON {:
+        RESULT =
+            new JSONObject()
+                .put("operator", (String) operador)
+                .put("valueFrom", (JSONObject) objetoJSON)
+                .put("type",1)
+                .put("value",-1)
+        ;
+     :}
+;
+
+OperadorDeComparacionOpcional::=
+    OPERADORDECOMPARACION:operador {: RESULT = (String) operador ; :}
+    | /* No hay Operador de Comparación */ {: RESULT = "" ; :}
+;
+
+CasoDefault::=
+	DEFAULT DOSPUNTOS {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	:} BloqueDeInstrucciones FinalOpcional {:
+        JSONObject temporal = new JSONObject();
+        temporal
+            .put("subprogram",instruccionesDelPrograma)
+            .put("instruction","DEFAULT")
+            .put("end",true)
+            //.put("continue",(ArrayList<JSONObject>) anteriores)
+        ;
+        instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+        pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+        //instruccionesDelPrograma.add(temporal);
+        //ArrayList<JSONObject> lista = (ArrayList<JSONObject>) anteriores;
+        //lista.add(temporal);
+        RESULT = temporal;
+    :}
+;
+
+FinalOpcional::=
+    FIN PUNTOYCOMA {: RESULT = true; :}
+    | /*Simplemente termina*/ {: RESULT = false; :}
+;
+
+EstrucutraDeControlFor::=
+	PARA PARENTESISABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	 :} DeclaracionesParaFor:listaDeDeclaraciones {:
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+	 :} PUNTOYCOMA Condicion:condicion PUNTOYCOMA {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	 :} InstruccionesParaFor:listaInstrucciones {:
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+	 :} PARENTESISCIERRA LLAVEABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	 :} BloqueDeInstrucciones LLAVECIERRA {:
+        JSONObject temporal = new JSONObject();
+        temporal
+            .put("subprogram",instruccionesDelPrograma)
+            .put("instruction","FOR")
+            .put("declarations",listaDeDeclaraciones)
+            .put("condition",condicion)
+            .put("increments",listaInstrucciones)
+        ;
+        instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+        pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+
+        instruccionesDelPrograma.add(temporal);
+	 :}
+;
+
+DeclaracionesParaFor::=
+	IDENTIFICADOR:identificador AsignacionDeValoresAlDeclararVariable:objetoJSON {:
+        instruccionesDelPrograma.add(
+	        new JSONObject()
+                .put("identifier",identificador)
+                .put("valueFrom",(JSONObject) objetoJSON)
+                 .put("type",1)
+                .put("instruction","MODIFICAVARIABLEFOR")
+	    );
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:} DeclaracionesParaForContinuacion
+	| VARIABLE IDENTIFICADOR:identificador AsignacionDeValoresAlDeclararVariable:objetoJSON {:
+        instruccionesDelPrograma.add(
+	        new JSONObject()
+                .put("identifier",identificador)
+                 .put("type",2)
+                .put("valueFrom",(JSONObject) objetoJSON)
+                .put("instruction","CREAVARIABLETEMPORALFOR")
+	    );
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:} DeclaracionesParaForContinuacion
+	| /* Puede ir nada */ {:
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:}
+;
+
+DeclaracionesParaForContinuacion::=
+	SEPARADOR IDENTIFICADOR:identificador AsignacionDeValoresAlDeclararVariable:objetoJSON {:
+         instruccionesDelPrograma.add(
+            new JSONObject()
+                 .put("identifier",identificador)
+                 .put("type",1)
+                 .put("valueFrom",(JSONObject) objetoJSON)
+                 .put("instruction","MODIFICAVARIABLEFOR")
+        );
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+    :} DeclaracionesParaForContinuacion
+	| SEPARADOR VARIABLE IDENTIFICADOR:identificador AsignacionDeValoresAlDeclararVariable:objetoJSON {:
+       instruccionesDelPrograma.add(
+            new JSONObject()
+                   .put("identifier",identificador)
+                   .put("type",2)
+                   .put("valueFrom",(JSONObject) objetoJSON)
+                   .put("instruction","CREAVARIABLETEMPORALFOR")
+            );
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+    :} DeclaracionesParaForContinuacion
+	| /* Ninguna otra declaración  */ {:
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:}
+;
+
+InstruccionesParaFor::=
+	IDENTIFICADOR:identificador OPERADORARITMETICOSUMA OPERADORARITMETICOSUMA {:
+        instruccionesDelPrograma.add(
+	        new JSONObject()
+                .put("identifier",identificador)
+                .put("instruction","INCREMENTAVARIABLEFOR")
+                .put("type",1)
+	    );
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:} InstruccionesParaForContinuacion
+	| IDENTIFICADOR:identificador OPERADORARITMETICORESTA OPERADORARITMETICORESTA {:
+       instruccionesDelPrograma.add(
+            new JSONObject()
+                   .put("identifier",identificador)
+                   .put("instruction","DECREMENTAVARIABLEFOR")
+                   .put("type",2)
+            );
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:} InstruccionesParaForContinuacion
+	| /* Puede Ir nada */ {:
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+	    RESULT = resultadoTemporal;
+	:}
+;
+
+InstruccionesParaForContinuacion::=
+	SEPARADOR IDENTIFICADOR:identificador OPERADORARITMETICOSUMA OPERADORARITMETICOSUMA {:
+        instruccionesDelPrograma.add(
+	        new JSONObject()
+                .put("identifier",identificador)
+                .put("instruction","INCREMENTAVARIABLEFOR")
+                .put("type",1)
+	    );
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:} InstruccionesParaForContinuacion
+	| SEPARADOR IDENTIFICADOR:identificador OPERADORARITMETICORESTA OPERADORARITMETICORESTA {:
+       instruccionesDelPrograma.add(
+            new JSONObject()
+                   .put("identifier",identificador)
+                   .put("instruction","DECREMENTAVARIABLEFOR")
+                   .put("type",2)
+            );
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:} InstruccionesParaForContinuacion
+	| /* Ninguna Otra Operacion */ {:
+	    ArrayList<JSONObject> resultadoTemporal = (ArrayList<JSONObject>) instruccionesDelPrograma;
+        RESULT = resultadoTemporal;
+	:}
+;
+
+EstrucutraDeControlDoWhile::=
+	HACER LLAVEABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	:} BloqueDeInstrucciones LLAVECIERRA REPITE PARENTESISABRE Condicion:condicion PARENTESISCIERRA PUNTOYCOMA {:
+	    JSONObject temporal = new JSONObject();
+	    temporal
+	        .put("condition",(JSONObject) condicion)
+            .put("subprogram",instruccionesDelPrograma)
+            .put("instruction","HACER")
+	    ;
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+
+	    instruccionesDelPrograma.add(temporal);
+	:}
+;
+
+EstrucutraDeControlWhile::=
+	REPITEHASTA PARENTESISABRE Condicion:condicion PARENTESISCIERRA LLAVEABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	:} BloqueDeInstrucciones LLAVECIERRA {:
+	    JSONObject temporal = new JSONObject();
+	    temporal
+	        .put("condition",(JSONObject) condicion)
+            .put("subprogram",instruccionesDelPrograma)
+            .put("instruction","REPITEHASTA")
+	    ;
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+
+	    instruccionesDelPrograma.add(temporal);
+	:}
+;
+
+inrementosYDecrementos::=
+    IDENTIFICADOR:identificador OPERADORARITMETICOSUMA OPERADORARITMETICOSUMA PUNTOYCOMA {:
+        instruccionesDelPrograma.add(
+	        new JSONObject()
+                .put("identifier",identificador)
+                .put("instruction","INCREMENTAVARIABLE")
+	    );
+    :}
+    | IDENTIFICADOR:identificador OPERADORARITMETICORESTA OPERADORARITMETICORESTA PUNTOYCOMA {:
+        instruccionesDelPrograma.add(
+	        new JSONObject()
+                .put("identifier",identificador)
+                .put("instruction","DECREMENTAVARIABLE")
+	    );
+    :}
+;
+
+Funciones::=
+	IDENTIFICADOR:nombreFuncion PARENTESISABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	:} ParametrosDeEntrada:parametros {:
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+	:} PARENTESISCIERRA LLAVEABRE {:
+	    pilaDePilas.add(pilaDeInstrucciones);
+	    pilaDeInstrucciones = new Stack();
+	    pilaDeInstrucciones.add(instruccionesDelPrograma);
+	    instruccionesDelPrograma = new ArrayList<>();
+	:} BloqueDeInstrucciones LLAVECIERRA {:
+	    JSONObject temporal = new JSONObject();
+	    temporal
+	        .put("parameter",parametros)
+            .put("subprogram",instruccionesDelPrograma)
+            .put("instruction","FUNCION")
+            .put("name",nombreFuncion)
+	    ;
+	    instruccionesDelPrograma = (ArrayList<JSONObject>) pilaDeInstrucciones.pop();
+	    pilaDeInstrucciones = (Stack) pilaDePilas.pop();
+
+	    instruccionesDelPrograma.add(temporal);
+	:} Funciones
+	| /* No hay funciones */
+;
+
+ParametrosDeEntrada::=
+	VARIABLE IDENTIFICADOR:identificador {:
+	    instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("identifier",identificador)
+                .put("instruction","DECLARAFUNCION")
+        );
+        RESULT = instruccionesDelPrograma;
+	:} MasParametrosDeEntrada
+	| /* Sin parametros de entrada */ {: RESULT = instruccionesDelPrograma; :}
+;
+
+MasParametrosDeEntrada::=
+	SEPARADOR VARIABLE IDENTIFICADOR:identificador {:
+	    instruccionesDelPrograma.add(
+            new JSONObject()
+                .put("identifier",identificador)
+                .put("instruction","DECLARAFUNCION")
+        );
+        RESULT = instruccionesDelPrograma;
+	:} MasParametrosDeEntrada
+	| /* No más parámetros */ {: RESULT = instruccionesDelPrograma; :}
+;
+
+OperadorNegacion::=
+	OPERADORNEGACION {: RESULT = true; :}
+	| /* No hay Operador*/ {: RESULT = false; :}
+;
