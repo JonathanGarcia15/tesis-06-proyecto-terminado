@@ -1,0 +1,10 @@
+{
+	"Text":["",""],
+	"LimpiarMapa":["Limpiar Mapa","Clean Map"],
+	"NoSePuedeLimpiar":["No se puede limpiar el mapa mientras hay un programa ejecutándose. \nVaya a Editar/Detener Programa para detener el programa en ejecución. ","Can not clear map while program is running. \nGo to Edit/Stop Program to stop the running program. "],
+	"IniciarPrograma":["Iniciar Programa","Start Program"],
+	"DetenerPrograma":["Detener Programa","Stop Program"],
+	"ProcesoInterrumpido":["Se ha detenido el programa en ejecución.\nAhora puede iniciar de nuevo.","The running program has been stopped.\nYou can now start it again."],
+	"NoSePuedeDetener":["No hay programas en ejecución. ","No programs are running. "],
+	"NoSePuedeIniciar":["No se puede iniciar a ejecutar otro programa mientras hay uno en proceso. \nVaya a Editar/Detener Programa para detener el programa en ejecución. ","You cannot start another program while one is running. \nGo to Edit/Stop Program to stop the running program. "]
+}

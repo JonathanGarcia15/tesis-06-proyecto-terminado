@@ -125,11 +125,13 @@ public class CargaDeMapaCSV {
                     status=true;
                     message=idioma.traerTexto("MAPACREADO");
                     return;
+                case '0':
+                    break;
                 default:
-                    MapaBackend[jFilas][kColumnas] = 0;
-                    //status=false;
-                    //message=idioma.traerTexto("ERRORSIMBOLOS");
-                    //return;
+                    //MapaBackend[jFilas][kColumnas] = 0;
+                    status=false;
+                    message=idioma.traerTexto("ERRORSIMBOLOS");
+                    return;
             }
         }
         generarMapaHTML();

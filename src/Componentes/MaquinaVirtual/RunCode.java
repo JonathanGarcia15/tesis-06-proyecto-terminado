@@ -64,17 +64,17 @@ public class RunCode {
     private final Stack<TablaDeSimbolos> pilaDePilas = new Stack<>();
 
     public void ejecutaPrograma() {
-        tablaDeSimbolos.limpiarTablaDeSimbolos();
-        //Se trabajará sobre Mapa de Trabajo, se guarda el original de MapaBackend
-        DebajoDelPersonaje = 0;
-        MapaDeTrabajo = generarMapaDeTrabajo(MapaBackend);
-        actualizarMapaPorMovimientos();
-        tengoObjeto = false;
-        actualizarMapa();
-        verificaPersonaje();
-        funcionesATablaDeSimbolos();
-
+        cleanMap();
         boolean resultado = this.resolverPrograma("main",JSONPrograma.getJSONArray("main"));
+        if(resultado){
+            agregarTexto(
+                    idioma.traerTexto("ProgramaExitoso")
+            );
+        }else{
+            agregarTextoError(
+                    idioma.traerTexto("ProgramaFallido")
+            );
+        }
     }
 
     private int[][] generarMapaDeTrabajo(int[][] mapaBackend) {
@@ -1137,9 +1137,9 @@ public class RunCode {
 
     private void esperaTiempo() {
         try {
-            Thread.sleep(idioma.esperaTiempo());
+            Thread.sleep(idioma.getConfigInteger("TiempoInstruccion"));
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            this.lblResultados.setText(MapaHTML);
         }
     }
 
@@ -1459,9 +1459,9 @@ public class RunCode {
     private void actualizarMapa() {
         generarMapaHTML();
         try {
-            Thread.sleep(idioma.tiempoEsperaInstruccion());
+            Thread.sleep(idioma.getConfigInteger("TiempoInstruccion"));
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            this.lblResultados.setText(MapaHTML);
         }
         this.lblResultados.setText(MapaHTML);
     }
@@ -1469,9 +1469,9 @@ public class RunCode {
     private void actualizarMapaString(String texto) {
         generarMapaHTML();
         try {
-            Thread.sleep(idioma.tiempoEsperaInstruccion());
+            Thread.sleep(idioma.getConfigInteger("TiempoInstruccion"));
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            this.lblResultados.setText(MapaHTML);
         }
         agregarTexto(texto);
         this.lblResultados.setText(MapaHTML);
@@ -1983,5 +1983,22 @@ public class RunCode {
             }
             System.out.print("\n");
         }System.out.print("\n");
+    }
+
+    public void cleanMap() {
+        tablaDeSimbolos.limpiarTablaDeSimbolos();
+        //Se trabajará sobre Mapa de Trabajo, se guarda el original de MapaBackend
+        DebajoDelPersonaje = 0;
+        MapaDeTrabajo = generarMapaDeTrabajo(MapaBackend);
+        actualizarMapaPorMovimientos();
+        tengoObjeto = false;
+        actualizarMapa();
+        verificaPersonaje();
+        funcionesATablaDeSimbolos();
+    }
+
+    public void printHTMLMap(){
+        generarMapaHTML();
+        this.lblResultados.setText(MapaHTML);
     }
 }
