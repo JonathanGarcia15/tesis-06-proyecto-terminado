@@ -4,17 +4,40 @@ import org.json.JSONObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class cargarTexto {
-    public cargarTexto(String nombreDeLaClase) {
-        this.nombreDeLaClase = nombreDeLaClase;
-    }
 
-    private final String nombreDeLaClase;
+    ///private final String nombreDeLaClase;
+
+    private JSONObject JSONStrings;
+    private JSONObject JSONConfigs;
+
+    private JSONObject JSONColors;
 
     private final String DireccionProyecto = System.getProperty("user.dir").replace("\\", "/");
+
+
+    public cargarTexto(String nombreDeLaClase) {
+        ///this.nombreDeLaClase = nombreDeLaClase;
+        try {
+            JSONStrings = new JSONObject(
+                    new String(Files.readAllBytes(Paths.get(DireccionProyecto + "/FILES/Strings/" + nombreDeLaClase + ".json")), StandardCharsets.UTF_8)
+            );
+            JSONConfigs = new JSONObject(
+                    new String(Files.readAllBytes(Paths.get(DireccionProyecto + "/FILES/Config/Config.json")), StandardCharsets.UTF_8)
+            );
+            JSONColors = new JSONObject(
+                    new String(Files.readAllBytes(Paths.get(DireccionProyecto + "/FILES/Strings/Colors.json")), StandardCharsets.UTF_8)
+            );
+        }catch(IOException ignore){
+            JSONStrings = new JSONObject();
+            JSONConfigs = new JSONObject();
+            JSONColors = new JSONObject();
+        }
+    }
 
     public String traerTexto(String valor){
         return texto(valor);
@@ -24,85 +47,33 @@ public class cargarTexto {
     }
 
     private String color(String valor) {
-        try {
-            return new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Strings/Colors.json")))
-            ).getString(valor);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return JSONColors.getString(valor);
     }
 
     private String texto(String key){
-        JSONObject Cadenas = this. traeObjeto();
+        //JSONObject Cadenas = this. traeObjeto();
         //JSONObject IdiomaPreferido = this. traeConfiguracionIdiomaPrograma();
 
         if ("EN".equals(this.getConfigString("IdiomaDelPrograma"))) {
-            return Cadenas.getJSONArray(key).getString(1);
+            return JSONStrings.getJSONArray(key).getString(1);
         }
-        return Cadenas.getJSONArray(key).getString(0);
-    }
-
-    private JSONObject traeObjeto(){
-        try {
-            return new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Strings/"+nombreDeLaClase+".json")))
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return JSONStrings.getJSONArray(key).getString(0);
     }
 
     public int FuenteMapa() {
-        try {
-            return new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Config/Config.json")))
-            ).getInt("TamanoTextoMapa");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return JSONConfigs.getInt("TamanoTextoMapa");
     }
 
     public String getConfigString(String key) {
-        return getConfigStr(key);
-    }
-
-    private String getConfigStr(String key) {
-        try {
-            return new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Config/Config.json")))
-            ).getString(key);
-        } catch (IOException e) {
-            return "NO CONFIG FILE";
-        }
+        return JSONConfigs.getString(key);
     }
 
     public int getConfigInteger(String key) {
-        return getConfigInt(key);
-    }
-
-    private int getConfigInt(String key) {
-        try {
-            return new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Config/Config.json")))
-            ).getInt(key);
-        } catch (IOException e) {
-            return -99999999;
-        }
+        return JSONConfigs.getInt(key);
     }
 
     public boolean getConfigBoolean(String key) {
-        return getConfigBool(key);
-    }
-
-    private boolean getConfigBool(String key) {
-        try {
-            return new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Config/Config.json")))
-            ).getBoolean(key);
-        } catch (IOException e) {
-            return false;
-        }
+        return JSONConfigs.getBoolean(key);
     }
 
     public boolean putConfigValue(String key, String value) {
@@ -118,42 +89,21 @@ public class cargarTexto {
     }
 
     private boolean putString(String key, String value) {
-        try {
-            JSONObject config = new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Config/Config.json")))
-            );
-            config.put(key,value);
-            saveConfigFile(config);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+        JSONConfigs.put(key,value);
+        saveConfigFile(JSONConfigs);
+        return true;
     }
 
     private boolean putInt(String key, int value) {
-        try {
-            JSONObject config = new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Config/Config.json")))
-            );
-            config.put(key,value);
-            saveConfigFile(config);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+        JSONConfigs.put(key,value);
+        saveConfigFile(JSONConfigs);
+        return true;
     }
 
     private boolean putBoolean(String key, Boolean value) {
-        try {
-            JSONObject config = new JSONObject(
-                    new String (Files.readAllBytes(Paths.get(DireccionProyecto+"/FILES/Config/Config.json")))
-            );
-            config.put(key,value);
-            saveConfigFile(config);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+        JSONConfigs.put(key,value);
+        saveConfigFile(JSONConfigs);
+        return true;
     }
 
     private void saveConfigFile(JSONObject config) {
