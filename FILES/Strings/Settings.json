@@ -1,0 +1,19 @@
+{
+	"Name":["",""],
+	"EscrituraExitosa":["Cambios Guardados","Changes saved"],
+	"GuardarCambios":["Guardar cambios (Necesitarás reiniciar el programa para aplicar los cambios): ","Save changes (You will need to restart the program to apply): "],
+	"Default":["Default","Default"],
+	"SoloEspannol":["Solo Español - Spanish","Only Spanish - Español"], 
+	"SoloIngles":["Solo Inglés - English","Only English - Inglés"],
+	"Espannol":["Español - Spanish","Español - Spanish"], 
+	"Ingles":["English - Inglés","English - Inglés"],
+	"Title":["Configuración","Settings"],
+	"Guardar":["Guardar Configuración","Apply"],
+	"OpcionesCompilador":["Mostrar opciones para generar archivos del compilador: ","Show options to generate compiler files: "],
+	"TiempoInstruccionEspera":["Tiempo de espera cuando se ejecuta la instrucción espera(): ","Wait time when the wait() statement is executed:"],
+	"TiempoInstruccion":["Tiempo de espera por cada instrucción: ","Waiting time for each instruction: "],
+	"TamannoMapa":["Tamaño del mapa: ","Map size: "],
+	"IdiomaCompilador":["Idioma del Compilador: ","Compiler language: "],
+	"IdiomaPrograma":["Idioma del programa: ","Program language: "],
+	"Configuracion":["Configuración","Settings"]
+}

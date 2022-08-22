@@ -1,0 +1,9 @@
+{
+	"Text":["",""],
+	"ChangelogFile":["ChangelogES.txt","ChangelogEN.txt"],
+	"AcercaDe":["Acerca De","About"],
+	"Aceptar":["Aceptar","OK"],
+	"VersionText":["Versión: ","Version: "],
+	"Cambios":["¿Qué hay de nuevo? ","What is new? "],
+	"About":["<html><body><div style='text-align: center;'><br><br>NAME <br>VERSION <br><br>Realizado por: <br>García Gil Jonathan <br><br>Como proyecto de Tesis para obtener el título de:<br>Licenciatura en Ingeniería de Software<br><br>Universidad Autónoma de la Ciudad de México<br>Ciudad de México 2022<br><br></div></body></html>","<html><body><div style='text-align: center;'><br><br>NAME <br>VERSION <br><br>Made by: <br>García Gil Jonathan <br><br>As a thesis project to obtain the degree of:<br>Bachelor's Degree in Software Engineering<br><br>Universidad Autónoma de la Ciudad de México<br>Mexico City 2022<br><br></div></body></html>"],
+}

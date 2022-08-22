@@ -1,0 +1,3 @@
+Versión: 1.0.22082022.ReleaseCandidate
+
+1.- Versión Inicial del Proyecto

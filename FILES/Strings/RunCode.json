@@ -1,5 +1,7 @@
 {
 	"Name":["",""],
+	"ProgramaExitoso":["El programa se ejecutó correctamente. ","The program was executed correctly. "],
+	"ProgramaFallido":["El programa ha fallado durante la ejecución. ","The program crashed during runtime. "],
 	"TocasteKaboom":["¡Grave error! Has tocado una bomba tratando de dejar el objeto, tendrás que reiniciar el juego. ","Big mistake! You have touched a bomb trying to drop the object, now you will have to restart the game. "],
 	"ErrorOperacionAritmetica":["No se pudo resolver la operación aritmética.","The arithmetic operation could not be solved."],
 	"NoSeEncontroValorID":["No se encontró el valor del identificador: VAR ","The value of the variable: VAR was not found."],
