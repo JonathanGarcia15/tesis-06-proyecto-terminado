@@ -12,7 +12,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -288,9 +288,8 @@ public class Fenix extends JFrame{
             rutaCodigoDelUsuario = ruta.toString().replace("\\", "/");
         }
         String filePath = rutaCodigoDelUsuario;
-        Charset encoding = Charset.defaultCharset();
         try {
-            List<String> lines = Files.readAllLines(Paths.get(filePath), encoding);
+            List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
             string = String.join("\n", lines);
             txtCodigoFuente.setText(string);
             agregarTexto(idioma.traerTexto("ProgramaCargado"));
@@ -303,10 +302,8 @@ public class Fenix extends JFrame{
             rutaMapaDelUsuario = ruta.toString().replace("\\", "/");
         }
         String filePath = rutaMapaDelUsuario;
-        Charset encoding = Charset.defaultCharset();
-
         try {
-            List<String> lines = Files.readAllLines(Paths.get(filePath), encoding);
+            List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
             string = String.join("\n", lines);
 
         } catch (IOException ignored) {}
@@ -328,11 +325,8 @@ public class Fenix extends JFrame{
     private void abrirPrograma(String IDEjemplo) {
         String string;
         String filePath = System.getProperty("user.dir").replace("\\", "/")+"/FILES/Examples/"+IDEjemplo+"/ExampleProgram.txt";
-        Charset encoding = Charset.defaultCharset();
-        this.rutaCodigoDelUsuario=filePath;
-
         try {
-            List<String> lines = Files.readAllLines(Paths.get(filePath), encoding);
+            List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
             string = String.join("\n", lines);
             txtCodigoFuente.setText(string);
             agregarTexto(idioma.traerTexto("ProgramaCargado"));
@@ -353,10 +347,9 @@ public class Fenix extends JFrame{
     private void abrirMapa(String IDEjemplo) {
         String string ="";
         String filePath = System.getProperty("user.dir").replace("\\", "/")+"/FILES/Examples/"+IDEjemplo+"/TestMap.csv";
-        Charset encoding = Charset.defaultCharset();
         rutaMapaDelUsuario = filePath;
         try {
-            List<String> lines = Files.readAllLines(Paths.get(filePath), encoding);
+            List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
             string = String.join("\n", lines);
 
         } catch (IOException ignored) {}

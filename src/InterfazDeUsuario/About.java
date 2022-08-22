@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -75,9 +76,8 @@ public class About extends JFrame {
         String filePath = System.getProperty("user.dir").replace("\\", "/")+
                 "/FILES/Strings/"+
                 idioma.traerTexto("ChangelogFile");
-        Charset encoding = Charset.defaultCharset();
         try {
-            List<String> lines = Files.readAllLines(Paths.get(filePath), encoding);
+            List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
             string = lines.stream().collect(Collectors.joining("\n"));
             txtChangelog.setText(string);
         } catch (IOException ex) {

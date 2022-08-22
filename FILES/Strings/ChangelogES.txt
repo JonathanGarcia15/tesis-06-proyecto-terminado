@@ -1,3 +1,7 @@
+Versión 1.0.2.22082022.ReleaseCandidate
+1.- Corrección de acentos en la aplicación final.
+2.- Se evita la modificación de ejemplos predeterminados.
+
 Versión: 1.0.22082022.ReleaseCandidate
 
 1.- Versión Inicial del Proyecto
