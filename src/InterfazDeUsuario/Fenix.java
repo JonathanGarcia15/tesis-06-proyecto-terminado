@@ -305,7 +305,6 @@ public class Fenix extends JFrame{
         try {
             List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
             string = String.join("\n", lines);
-
         } catch (IOException ignored) {}
 
         CargaDeMapaCSV map = new CargaDeMapaCSV();
@@ -316,7 +315,6 @@ public class Fenix extends JFrame{
         }else{
             agregarTextoError(map.getMessage());
         }
-
         ejecutarPrograma.setColumnas(map.getColumnas());
         ejecutarPrograma.setFilas(map.getFilas());
         ejecutarPrograma.setMapaBackend(map.getMapaBackend());

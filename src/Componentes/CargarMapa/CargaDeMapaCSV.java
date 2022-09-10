@@ -2,8 +2,6 @@ package Componentes.CargarMapa;
 
 import ConfiguraLenguaje.cargarTexto;
 
-import javax.swing.*;
-
 public class CargaDeMapaCSV {
 
     private int[][] MapaBackend;
@@ -44,19 +42,18 @@ public class CargaDeMapaCSV {
     }
 
     private void generarMapaBackEnd(String CSVMapa){
-        int filas=1, columnas=1;
+        Filas=1;
+        Columnas=1;
         for(int i=0; i<CSVMapa.length() ; i++){
             if(CSVMapa.charAt(i) == ','){
-                columnas += 1;
+                Columnas += 1;
             }else if(CSVMapa.charAt(i) == '\n'){
-                filas+=1;
-                columnas = 1;
+                Filas+=1;
+                Columnas = 1;
             }
         }
 
-        MapaBackend = new int[filas][columnas];
-        Filas = filas;
-        Columnas = columnas;
+        MapaBackend = new int[Filas][Columnas];
         MapaHTML = "";
         boolean personajeLeido = false;
 
@@ -120,7 +117,6 @@ public class CargaDeMapaCSV {
                     kColumnas = 0;
                     break;
                 case ';':
-                    //MapaBackend[jFilas][kColumnas] = 8;
                     generarMapaHTML();
                     status=true;
                     message=idioma.traerTexto("MAPACREADO");
@@ -128,9 +124,9 @@ public class CargaDeMapaCSV {
                 case '0':
                     break;
                 default:
-                    //MapaBackend[jFilas][kColumnas] = 0;
                     status=false;
-                    message=idioma.traerTexto("ERRORSIMBOLOS");
+                    message=idioma.traerTexto("ERRORSIMBOLOS")
+                            + CSVMapa.charAt(i);
                     return;
             }
         }
@@ -188,5 +184,4 @@ public class CargaDeMapaCSV {
         }
         MapaHTML = "<html><body><br><table>" + MapaHTML + "</table><br></body></html>";
     }
-
 }

@@ -1,5 +1,5 @@
 {
   "ERRORPERSONAJE": ["El personaje se ha puesto en el mapa. No pueden existir 2 personajes a la vez. ","The character has been put on the map. It is not allowed to enter 2 characters at the same time. "],
   "MAPACREADO": ["El mapa se ha cargado exitosamente. ","The map has been loaded successfully."],
-  "ERRORSIMBOLOS": ["No se reconoció un símbolo del mapa de prueba. ","A symbol on the test map was not recognized."]
+  "ERRORSIMBOLOS": ["No se reconoció un símbolo del mapa de prueba. Símbolo: ","A symbol on the test map was not recognized. Symbol: "]
 }
