@@ -1,3 +1,7 @@
+Versión 1.0.3.09092022.ReleaseCandidate
+1.- Correción de la instrucción "for" dónde no decrementaba la instrucción deseada.
+2.- Correcciones y mejoras internas.
+
 Versión 1.0.2.22082022.ReleaseCandidate
 1.- Corrección de acentos en la aplicación final.
 2.- Se evita la modificación de ejemplos predeterminados.

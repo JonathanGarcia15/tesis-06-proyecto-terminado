@@ -15,10 +15,8 @@ public class EjecutarPrograma implements Runnable {
     private int[][] MapaBackend;
     private JSONObject JSONPrograma;
     private final RunCode runCode = new RunCode();
-
     private final cargarTexto idioma = new cargarTexto("EjecutarPrograma");
     private Boolean canStart;
-
     private Thread hilo;
 
     public EjecutarPrograma() {
@@ -60,25 +58,14 @@ public class EjecutarPrograma implements Runnable {
 
     public void interrumpirProceso(){
         if(!canStart) {
-            //int tiempoInst = idioma.getConfigInteger("TiempoInstruccion");
-            //int tiempoEsp = idioma.getConfigInteger("TiempoEspera");
-
-            //idioma.putConfigValue("TiempoInstruccion",1);
-            //idioma.putConfigValue("TiempoEspera",1);
-
             hilo.stop();
             canStart = true;
-
             JOptionPane.showMessageDialog(
                     new JFrame(),
                     this.idioma.traerTexto("ProcesoInterrumpido"),
                     this.idioma.traerTexto("DetenerPrograma"),
                     JOptionPane.INFORMATION_MESSAGE
             );
-
-            //idioma.putConfigValue("TiempoInstruccion",tiempoInst);
-            //idioma.putConfigValue("TiempoEspera",tiempoEsp);
-
             runCode.printHTMLMap();
         }else{
             JOptionPane.showMessageDialog(

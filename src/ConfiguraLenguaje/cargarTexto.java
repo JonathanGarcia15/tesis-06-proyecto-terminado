@@ -7,10 +7,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class cargarTexto {
-
-    ///private final String nombreDeLaClase;
 
     private JSONObject JSONStrings;
     private JSONObject JSONConfigs;
@@ -21,7 +20,6 @@ public class cargarTexto {
 
 
     public cargarTexto(String nombreDeLaClase) {
-        ///this.nombreDeLaClase = nombreDeLaClase;
         try {
             JSONStrings = new JSONObject(
                     new String(Files.readAllBytes(Paths.get(DireccionProyecto + "/FILES/Strings/" + nombreDeLaClase + ".json")), StandardCharsets.UTF_8)
@@ -51,9 +49,6 @@ public class cargarTexto {
     }
 
     private String texto(String key){
-        //JSONObject Cadenas = this. traeObjeto();
-        //JSONObject IdiomaPreferido = this. traeConfiguracionIdiomaPrograma();
-
         if ("EN".equals(this.getConfigString("IdiomaDelPrograma"))) {
             return JSONStrings.getJSONArray(key).getString(1);
         }
@@ -65,15 +60,33 @@ public class cargarTexto {
     }
 
     public String getConfigString(String key) {
-        return JSONConfigs.getString(key);
+        try {
+            return new JSONObject(
+                    new String(Files.readAllBytes(Paths.get(DireccionProyecto + "/FILES/Config/Config.json")), StandardCharsets.UTF_8)
+            ).getString(key);
+        }catch (Exception ignore){
+            return "";
+        }
     }
 
     public int getConfigInteger(String key) {
-        return JSONConfigs.getInt(key);
+        try {
+            return new JSONObject(
+                    new String(Files.readAllBytes(Paths.get(DireccionProyecto + "/FILES/Config/Config.json")), StandardCharsets.UTF_8)
+            ).getInt(key);
+        }catch (Exception ignore){
+            return -1;
+        }
     }
 
     public boolean getConfigBoolean(String key) {
-        return JSONConfigs.getBoolean(key);
+        try {
+            return new JSONObject(
+                    new String(Files.readAllBytes(Paths.get(DireccionProyecto + "/FILES/Config/Config.json")), StandardCharsets.UTF_8)
+            ).getBoolean(key);
+        }catch (Exception ignore){
+            return false;
+        }
     }
 
     public boolean putConfigValue(String key, String value) {
@@ -95,6 +108,32 @@ public class cargarTexto {
     }
 
     private boolean putInt(String key, int value) {
+        if((Objects.equals(key, "TamanoTextoMapa"))&&(value<=10)){
+            JSONConfigs.put(key,11);
+            saveConfigFile(JSONConfigs);
+            return true;
+        }else if((Objects.equals(key, "TamanoTextoMapa"))&&(value>=40)){
+            JSONConfigs.put(key,39);
+            saveConfigFile(JSONConfigs);
+            return true;
+        }else if((Objects.equals(key, "TiempoEspera"))&&(value<=0)){
+            JSONConfigs.put(key,1);
+            saveConfigFile(JSONConfigs);
+            return true;
+        }else if((Objects.equals(key, "TiempoEspera"))&&(value>2000)){
+            JSONConfigs.put(key,2000);
+            saveConfigFile(JSONConfigs);
+            return true;
+        }else if((Objects.equals(key, "TiempoInstruccion"))&&(value<=0)){
+            JSONConfigs.put(key,1);
+            saveConfigFile(JSONConfigs);
+            return true;
+        }else if((Objects.equals(key, "TiempoInstruccion"))&&(value>2000)){
+            JSONConfigs.put(key,2000);
+            saveConfigFile(JSONConfigs);
+            return true;
+        }
+
         JSONConfigs.put(key,value);
         saveConfigFile(JSONConfigs);
         return true;

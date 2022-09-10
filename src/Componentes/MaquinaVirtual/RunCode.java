@@ -18,20 +18,19 @@ public class RunCode {
     private JTextArea txtResultados;
     private JSONObject JSONPrograma;
     private int[][] MapaBackend;
-
-    private int[][] MapaDeTrabajo;
-    private String MapaHTML;
     private int Filas;
     private int Columnas;
+    private String MapaHTML;
+    private int[][] MapaDeTrabajo;
     private int FilaPersonaje;
     private int ColumnaPersonaje;
     private int Personaje;
     private boolean tengoObjeto = false;
-
     private int DebajoDelPersonaje;
     private final cargarTexto idioma = new cargarTexto("RunCode");
     private TablaDeSimbolos tablaDeSimbolos = new TablaDeSimbolos();
     private int pintura = -1;
+    private final Stack<TablaDeSimbolos> pilaDePilas = new Stack<>();
 
     public void setFilas(int filas) {
         Filas = filas;
@@ -60,8 +59,6 @@ public class RunCode {
     public boolean isReady() {
         return MapaBackend != null && JSONPrograma.getBoolean("status");
     }
-
-    private final Stack<TablaDeSimbolos> pilaDePilas = new Stack<>();
 
     public void ejecutaPrograma() {
         cleanMap();
@@ -384,7 +381,7 @@ public class RunCode {
                             return false;
                         }
                     } else if (tmp.getInt("type") == 2) {
-                        if (!(DECLARAVARIABLE(tmp, idVariablesTemporales))) {
+                        if (!(DECREMENTAVARIABLE(tmp))) {
                             return false;
                         }
                     }
@@ -646,7 +643,6 @@ public class RunCode {
                 break;
         }
 
-
         if(Objects.equals(tipoOperacion, "<")){
             return (valorIzquierdo < valorDerecho);
         }else if(Objects.equals(tipoOperacion, "<=")){
@@ -797,9 +793,7 @@ public class RunCode {
 
     private boolean ELIMINAR() {
         String texto;
-
         int objetoFrente = MapaDeTrabajo[FilaEnFrente()][ColumnaEnFrente()];
-
         switch (objetoFrente){
             case 6:
                 MapaDeTrabajo[FilaPersonaje][ColumnaPersonaje] = 13;
@@ -846,13 +840,10 @@ public class RunCode {
             default:
                 actualizarMapaString(idioma.traerTexto("NingunObjeto"));
         }
-
         texto=
                 idioma.traerTexto("InstruccionEliminarObjeto")+
                         idioma.traerTexto("Ejecutada")
         ;
-
-
         actualizarMapaString(texto);
         return true;
     }
@@ -1564,7 +1555,6 @@ public class RunCode {
     }
 
     private boolean DECLARAVARIABLE(JSONObject temporal,String funcion) {
-
         //Comprobando que no exista el identificador a agregar
         //Una variable temporal no debe estar declarada antes por ningún otro lado. No puede haber 2 variables a la vez con el mismo nombre.
         if (tablaDeSimbolos.existeUnElemento(temporal.getString("identifier"),  0)) {
@@ -1579,7 +1569,6 @@ public class RunCode {
             );
             return false;
         }
-
         switch (temporal.getInt("type")) {
             case 0:
                 //No hay valor de asignación
@@ -1618,7 +1607,6 @@ public class RunCode {
                     );
                     return false;
                 }
-
                 tablaDeSimbolos.agregarElementoATabla(
                         temporal.getString("identifier"),
                         resultado,
@@ -1637,7 +1625,6 @@ public class RunCode {
                     );
                     return false;
                 }
-
                 tablaDeSimbolos.agregarElementoATabla(
                         temporal.getString("identifier"),
                         tablaDeSimbolos.valorDeUnIdentificador(temporal.getString("valueFrom"),  0),
@@ -1692,7 +1679,6 @@ public class RunCode {
                         OperacionARealizar += getStringOperacion(operation.getJSONObject("operation"));
                     }
                 }
-
                 if (!Objects.equals(operation.getJSONObject("random").toString(), "{}")) {
                     OperacionARealizar += getStringOperacion(operation.getJSONObject("random"));
                 }
@@ -1707,7 +1693,6 @@ public class RunCode {
                 break;
             case 2:
                 //Es de un valor de una variable
-
                 //Verificando que exista la variable:
                 if (!tablaDeSimbolos.existeUnElemento(operation.getString("valueFrom"),  0)) {
                     agregarTextoError(
@@ -1990,7 +1975,7 @@ public class RunCode {
         //Se trabajará sobre Mapa de Trabajo, se guarda el original de MapaBackend
         DebajoDelPersonaje = 0;
         MapaDeTrabajo = generarMapaDeTrabajo(MapaBackend);
-        actualizarMapaPorMovimientos();
+        //actualizarMapaPorMovimientos();
         tengoObjeto = false;
         actualizarMapa();
         verificaPersonaje();
