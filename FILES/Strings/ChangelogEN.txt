@@ -1,4 +1,9 @@
-Versión 1.0.3.09092022.ReleaseCandidate
+Version 1.0.4.12042023.ReleaseCandidate
+1.- The Lexical Analyzer is modified in order to identify the main function with new words.
+2.- The target code is printed in the folder \FILES\Output\.
+3.- Now it shows the type of exception when there is an error at the moment of executing the program for the first time.
+
+Version 1.0.3.09092022.ReleaseCandidate
 1.- Correction of the "for" instruction where it did not decrement the desired instruction.
 2.- Internal corrections and improvements.
 

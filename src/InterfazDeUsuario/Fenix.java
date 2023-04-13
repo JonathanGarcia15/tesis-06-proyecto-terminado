@@ -84,6 +84,8 @@ public class Fenix extends JFrame{
     String rutaMapaDelUsuario;
     String rutaCodigoDelUsuario;
 
+    String rutaCodigoDestinoDelUsuario;
+
     public Fenix(){
         super("{Fenix}");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(
@@ -377,6 +379,7 @@ public class Fenix extends JFrame{
         //Analizando los resultados:
         if(resultado.getBoolean("status")){
             ejecutarPrograma.setJSONPrograma(resultado.getJSONObject("result"));
+            imprimirCodigoDestino(resultado.getJSONObject("result"));
             agregarTexto(resultado.getString("message"));
         }else{
             //Errores en el resultado
@@ -384,6 +387,17 @@ public class Fenix extends JFrame{
             agregarTextoError(resultado.getString("message"));
         }
 
+    }
+
+    private void imprimirCodigoDestino(JSONObject result) {
+        String DireccionOutput = System.getProperty("user.dir").replace("\\", "/")+"/FILES/Output/output.json";
+        try {
+            FileWriter archivoEscrito = new FileWriter(DireccionOutput.replace("/","\\"));
+            archivoEscrito.write(String.valueOf(result));
+            archivoEscrito.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void AnalizarLexico(){

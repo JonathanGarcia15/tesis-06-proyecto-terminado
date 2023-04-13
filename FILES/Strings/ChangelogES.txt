@@ -1,3 +1,8 @@
+Versión 1.0.4.12042023.ReleaseCandidate
+1.- Se modifica el Analizador Léxico para identificar con nuevas palabras a la función principal.
+2.- Se imprime el código destino en la carpeta \FILES\Output.
+3.- Ahora muestra el tipo de excepción cuando existe un error al momento de ejecutar por primera vez.
+
 Versión 1.0.3.09092022.ReleaseCandidate
 1.- Correción de la instrucción "for" dónde no decrementaba la instrucción deseada.
 2.- Correcciones y mejoras internas.
