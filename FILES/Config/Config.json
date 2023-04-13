@@ -1,11 +1,11 @@
 {
   "TituloDelPrograma": "Fenix",
   "IdiomaDelCompilador": "DEFAULT",
-  "Version": "1.0.3.09092022.ReleaseCandidate",
+  "Version": "1.0.4.12042023.ReleaseCandidate",
   "MostrarOpcionGenerarCompiladores": true,
   "TiempoInstruccion": 10,
   "IdiomaDelPrograma": "ES",
-  "devVersion": true,
+  "devVersion": false,
   "TamanoTextoMapa": 16,
   "TiempoEspera": 1000
 }
